@@ -1,17 +1,11 @@
 /*
- * DaytimeClient.cpp
+ * TcpClient.cpp
  *
  *  Created on: Aug 18, 2014
  *      Author: gdeforest
  */
 
 #include "include/TcpClient.h"
-
-TcpClient::TcpClient()
-{
-	id = -1;
-	resolver = new tcp::resolver(ioService);
-}
 
 TcpClient::TcpClient(int id)
 {

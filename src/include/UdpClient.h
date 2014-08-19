@@ -24,7 +24,6 @@ class UdpClient
 		udp::resolver *resolver;
 		int id;
 	public:
-		UdpClient();
 		UdpClient(int id);
 		void Execute(const std::string& endpoint);
 };

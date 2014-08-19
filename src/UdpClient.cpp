@@ -7,12 +7,6 @@
 
 #include "include/UdpClient.h"
 
-UdpClient::UdpClient()
-{
-	id = -1;
-	resolver = new udp::resolver(ioService);
-}
-
 UdpClient::UdpClient(int id)
 {
 	this->id = id;

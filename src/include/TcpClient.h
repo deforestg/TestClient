@@ -24,7 +24,6 @@ class TcpClient
 		tcp::resolver *resolver;
 		int id;
 	public:
-		TcpClient();
 		TcpClient(int id);
 		void Execute(const std::string& endpoint);
 };
