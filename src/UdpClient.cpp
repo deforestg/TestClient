@@ -23,12 +23,17 @@ void UdpClient::Execute(const std::string& endpoint)
 		udp::socket socket(ioService);
 		socket.open(udp::v4());
 
+		int numRecieved = 0;
+        timeval time;
+        gettimeofday(&time, NULL);
+        double current, start = time.tv_sec + (time.tv_usec/1000000.0);
+
 		for (;;)
 		{
 			boost::array<char, 1> send_buf  = {{ 0 }};
 			socket.send_to(boost::asio::buffer(send_buf), receiver_endpoint);
 
-			boost::array<char, 128> recv_buf;
+			boost::array<char, 1024> recv_buf;
 			udp::endpoint sender_endpoint;
 
 			size_t len = socket.receive_from(
@@ -36,12 +41,15 @@ void UdpClient::Execute(const std::string& endpoint)
 				sender_endpoint
 			);
 
-			std::cout << "Client " << id << ":  ";
-			int* x = (int*)recv_buf.data();
-			for (int i = 0; i < (int)(len/sizeof(int)); i++) {
-				std::cout << x[i] << ", ";
+			// take a sample every 128 ticks
+			if (numRecieved++ % 128 == 0) {
+				std::cout << "Client " << id << ":  ";
+				std::cout << len << " byte packets, Recieving ";
+		        gettimeofday(&time, NULL);
+		        current = time.tv_sec + (time.tv_usec/1000000.0);
+				std::cout << numRecieved/(current - start) << " packets/s";
+				std::cout << std::endl;
 			}
-			std::cout << endl;
 		}
 	} catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;

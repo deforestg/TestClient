@@ -20,12 +20,17 @@ void TcpClient::Execute(const std::string& endpoint)
 		tcp::resolver::query query(endpoint, "18206");
 		tcp::resolver::iterator endpoint_iterator = resolver->resolve(query);
 
+		int numRecieved = 0;
+        timeval time;
+        gettimeofday(&time, NULL);
+        double current, start = time.tv_sec + (time.tv_usec/1000000.0);
+
 		for (;;)
 		{
 			tcp::socket socket(ioService);
 			boost::asio::connect(socket, endpoint_iterator);
 
-			boost::array<char, 128> buf;
+			boost::array<char, 1024> buf;
 			boost::system::error_code error;
 
 			size_t len = socket.read_some(boost::asio::buffer(buf), error);
@@ -36,12 +41,14 @@ void TcpClient::Execute(const std::string& endpoint)
 				throw boost::system::system_error(error); // Some other error.
 			}
 
-			std::cout << "Client " << id << ":  ";
-			int* x = (int*)buf.data();
-			for (int i = 0; i < (int)(len/sizeof(int)); i++) {
-				std::cout << x[i] << ", ";
+			if (numRecieved++ % 128 == 0) {
+				std::cout << "Client " << id << ":  ";
+				std::cout << len << " byte packets, Recieving ";
+		        gettimeofday(&time, NULL);
+		        current = time.tv_sec + (time.tv_usec/1000000.0);
+				std::cout << numRecieved/(current - start) << " packets/s";
+				std::cout << std::endl;
 			}
-			std::cout << endl;
 		}
 	} catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;

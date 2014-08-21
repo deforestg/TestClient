@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <sys/time.h>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
