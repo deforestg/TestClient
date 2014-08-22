@@ -10,6 +10,14 @@
 UdpClient::UdpClient(int id)
 {
 	this->id = id;
+
+	loadLength = 100;
+	testLoad = new int[loadLength];
+	for (int i = 0; i < loadLength; i++) {
+		testLoad[i] = i;
+	}
+	loadLength *= sizeof(int);
+
 	resolver = new udp::resolver(ioService);
 }
 
@@ -30,8 +38,8 @@ void UdpClient::Execute(const std::string& endpoint)
 
 		for (;;)
 		{
-			boost::array<char, 1> send_buf  = {{ 0 }};
-			socket.send_to(boost::asio::buffer(send_buf), receiver_endpoint);
+			const char* px = reinterpret_cast<const char*>(testLoad);
+			socket.send_to(boost::asio::buffer(boost::asio::buffer(px, loadLength)), receiver_endpoint);
 
 			boost::array<char, 1024> recv_buf;
 			udp::endpoint sender_endpoint;

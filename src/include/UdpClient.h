@@ -21,6 +21,8 @@ using boost::asio::ip::udp;
 class UdpClient
 {
 	private:
+		int loadLength;
+		int* testLoad;
 		boost::asio::io_service ioService;
 		udp::resolver *resolver;
 		int id;
